@@ -1,0 +1,30 @@
+name: flutter_template
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  auto_route: ^7.8.4
+  mobx: ^2.2.1
+  flutter_mobx: ^2.1.1
+  font_awesome_flutter: ^10.8.0
+  url_launcher: ^6.3.1
+  package_info_plus: ^8.1.1
+  provider: ^6.1.1
+  shared_preferences: ^2.3.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  build_runner: ^2.4.7
+  auto_route_generator: ^7.3.2
+  mobx_codegen: ^2.4.0
+
+flutter:
+  uses-material-design: true
