@@ -1,37 +1,45 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/core/models/question.dart';
-import 'package:flutter_template/router/app_router.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 @RoutePage()
 class GameScreen extends StatefulWidget {
-  const GameScreen({super.key});
+  final List<Question> questions;
+
+  const GameScreen({
+    super.key,
+    required this.questions,
+  });
 
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
 
 class _GameScreenState extends State<GameScreen> {
-  int currentQuestionIndex = 0;
-  bool isAnswerRevealed = false;
-  List<Question> questions = Question.sampleQuestions;
+  late int _currentQuestionIndex;
+  bool _showAnswer = false;
 
-  void nextQuestion() {
-    setState(() {
-      currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
-      isAnswerRevealed = false;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _currentQuestionIndex = 0;
   }
 
-  void revealAnswer() {
-    setState(() {
-      isAnswerRevealed = true;
-    });
+  void _nextQuestion() {
+    if (_currentQuestionIndex < widget.questions.length - 1) {
+      setState(() {
+        _currentQuestionIndex++;
+        _showAnswer = false;
+      });
+    } else {
+      context.popRoute();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final question = questions[currentQuestionIndex];
+    final question = widget.questions[_currentQuestionIndex];
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -44,212 +52,192 @@ class _GameScreenState extends State<GameScreen> {
               Colors.deepPurple.shade900,
               Colors.black,
             ],
-            stops: const [0.2, 0.9],
           ),
         ),
         child: SafeArea(
-          child: Column(
+          child: Stack(
             children: [
-              // Custom navigation bar
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Colors.white.withOpacity(0.1),
-                      width: 1,
+              // Back button
+              Positioned(
+                top: 24,
+                left: 24,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    onPressed: () => context.maybePop(),
+                    icon: const Icon(
+                      FontAwesomeIcons.arrowLeft,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    style: IconButton.styleFrom(
+                      padding: const EdgeInsets.all(12),
                     ),
                   ),
                 ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () => context.router.maybePop(),
-                      icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
-                      style: IconButton.styleFrom(
-                        backgroundColor: Colors.white.withOpacity(0.1),
-                        padding: const EdgeInsets.all(12),
-                      ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Question ${currentQuestionIndex + 1}/${questions.length}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => context.pushRoute(const SettingsRoute()),
-                      icon: const Icon(Icons.settings, color: Colors.white),
-                      style: IconButton.styleFrom(
-                        backgroundColor: Colors.white.withOpacity(0.1),
-                        padding: const EdgeInsets.all(12),
-                      ),
-                    ),
-                  ],
-                ),
               ),
-              Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(24),
-                  children: [
-                    const SizedBox(height: 20),
-                    // Question card
-                    Container(
-                      decoration: BoxDecoration(
+
+              // Main content
+              Padding(
+                padding: const EdgeInsets.all(32),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Question ${_currentQuestionIndex + 1}/${widget.questions.length}',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: Colors.white.withOpacity(0.8),
+                            ),
+                      ),
+                      const SizedBox(height: 32),
+                      Card(
                         color: Colors.white.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.1),
-                          width: 1,
-                        ),
-                      ),
-                      padding: const EdgeInsets.all(32),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurple.withOpacity(0.3),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.quiz_outlined,
-                              size: 48,
-                              color: Colors.deepPurple.shade200,
-                            ),
-                          ),
-                          const SizedBox(height: 32),
-                          Text(
-                            question.text,
-                            style: const TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              height: 1.4,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 24),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              'Answer in ${question.unit}',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white.withOpacity(0.8),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    if (isAnswerRevealed) ...[
-                      // Answer card
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.deepPurple.shade400.withOpacity(0.2),
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: Colors.deepPurple.shade200.withOpacity(0.3),
-                            width: 1,
-                          ),
                         ),
-                        padding: const EdgeInsets.all(32),
-                        child: Column(
-                          children: [
-                            Icon(
-                              Icons.lightbulb,
-                              size: 36,
-                              color: Colors.deepPurple.shade200,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              '${question.correctAnswer} ${question.unit}',
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepPurple.shade200,
+                        child: Padding(
+                          padding: const EdgeInsets.all(32),
+                          child: Column(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.deepPurple.withOpacity(0.3),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  FontAwesomeIcons.question,
+                                  size: 32,
+                                  color: Colors.deepPurple.shade200,
+                                ),
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            if (question.explanation.isNotEmpty) ...[
                               const SizedBox(height: 24),
                               Text(
-                                question.explanation,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white.withOpacity(0.8),
-                                  height: 1.5,
-                                ),
+                                question.text,
+                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                      color: Colors.white,
+                                      height: 1.4,
+                                    ),
                                 textAlign: TextAlign.center,
                               ),
+                              const SizedBox(height: 16),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  'Answer in ${question.unit}',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white.withOpacity(0.8),
+                                  ),
+                                ),
+                              ),
                             ],
-                          ],
+                          ),
                         ),
                       ),
                       const SizedBox(height: 32),
-                      // Next button
-                      ElevatedButton(
-                        onPressed: nextQuestion,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurple.shade400,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical: 20,
-                          ),
-                          textStyle: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
-                          elevation: 8,
-                          shadowColor: Colors.deepPurple.withOpacity(0.5),
+                      if (_showAnswer) ...[
+                        Card(
+                          color: Colors.deepPurple.shade400.withOpacity(0.2),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(32),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  FontAwesomeIcons.lightbulb,
+                                  size: 32,
+                                  color: Colors.deepPurple.shade200,
+                                ),
+                                const SizedBox(height: 24),
+                                Text(
+                                  '${question.correctAnswer} ${question.unit}',
+                                  style: TextStyle(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple.shade200,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                                if (question.explanation.isNotEmpty) ...[
+                                  const SizedBox(height: 24),
+                                  Text(
+                                    question.explanation,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.white.withOpacity(0.8),
+                                      height: 1.5,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              ],
+                            ),
                           ),
                         ),
-                        child: const Text('Next Question'),
-                      ),
-                    ] else
-                      // Reveal button
-                      ElevatedButton(
-                        onPressed: revealAnswer,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.deepPurple.shade400,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical: 20,
+                        const SizedBox(height: 32),
+                        ElevatedButton.icon(
+                          onPressed: _nextQuestion,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepPurple.shade400,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 16,
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            elevation: 8,
+                            shadowColor: Colors.deepPurple.withOpacity(0.5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                           ),
-                          textStyle: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5,
-                          ),
-                          elevation: 8,
-                          shadowColor: Colors.deepPurple.withOpacity(0.5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                          icon: const Icon(FontAwesomeIcons.forward),
+                          label: Text(
+                            _currentQuestionIndex < widget.questions.length - 1 ? 'Next Question' : 'Finish Game',
                           ),
                         ),
-                        child: const Text('Reveal Answer'),
-                      ),
-                  ],
+                      ] else
+                        ElevatedButton.icon(
+                          onPressed: () => setState(() => _showAnswer = true),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepPurple.shade400,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 16,
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            elevation: 8,
+                            shadowColor: Colors.deepPurple.withOpacity(0.5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          icon: const Icon(FontAwesomeIcons.eye),
+                          label: const Text('Reveal Answer'),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ],
