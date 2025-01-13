@@ -85,7 +85,7 @@ class HomeScreen extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
-                          FontAwesomeIcons.dice,
+                          FontAwesomeIcons.brain,
                           size: 100,
                           color: Colors.white,
                         ),
