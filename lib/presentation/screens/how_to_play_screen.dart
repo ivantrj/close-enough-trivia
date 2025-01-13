@@ -8,32 +8,46 @@ class HowToPlayScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              colorScheme.primary,
-              colorScheme.secondary,
+              Colors.deepPurple.shade900,
+              Colors.black,
             ],
+            stops: const [0.2, 0.9],
           ),
         ),
         child: SafeArea(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
+              // Custom navigation bar
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.05),
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Colors.white.withOpacity(0.1),
+                      width: 1,
+                    ),
+                  ),
+                ),
                 child: Row(
                   children: [
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.arrow_back_ios),
-                      color: Colors.white,
+                      icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+                      style: IconButton.styleFrom(
+                        backgroundColor: Colors.white.withOpacity(0.1),
+                        padding: const EdgeInsets.all(12),
+                      ),
                     ),
+                    const SizedBox(width: 16),
                     Text(
                       'How to Play',
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -46,14 +60,13 @@ class HowToPlayScreen extends StatelessWidget {
               ),
               Expanded(
                 child: ListView(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(24),
                   children: [
                     _buildInstructionCard(
                       context,
                       icon: FontAwesomeIcons.users,
                       title: '1. Gather Your Friends',
-                      description:
-                          'Get a group of friends together and make sure everyone has something to drink!',
+                      description: 'Get a group of friends together and make sure everyone has something to drink!',
                     ),
                     _buildInstructionCard(
                       context,
@@ -80,8 +93,7 @@ class HowToPlayScreen extends StatelessWidget {
                       context,
                       icon: FontAwesomeIcons.beerMugEmpty,
                       title: '5. Time to Drink!',
-                      description:
-                          'The person whose guess was furthest from the correct answer has to drink!',
+                      description: 'The person whose guess was furthest from the correct answer has to drink!',
                     ),
                     _buildInstructionCard(
                       context,
@@ -90,6 +102,7 @@ class HowToPlayScreen extends StatelessWidget {
                       description:
                           'Tap "Next Question" to continue. Keep playing until you\'ve had enough... or had too much! 😉',
                     ),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
@@ -106,37 +119,55 @@ class HowToPlayScreen extends StatelessWidget {
     required String title,
     required String description,
   }) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16.0),
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 24),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.1),
+          width: 1,
+        ),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(24),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              icon,
-              size: 24,
-              color: Theme.of(context).colorScheme.primary,
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.deepPurple.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Icon(
+                icon,
+                size: 24,
+                color: Colors.deepPurple.shade200,
+              ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: 20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      height: 1.3,
+                    ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Text(
                     description,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white.withOpacity(0.8),
+                      height: 1.5,
+                    ),
                   ),
                 ],
               ),
