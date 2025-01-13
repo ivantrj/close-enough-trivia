@@ -1,14 +1,10 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_template/core/providers/theme_provider.dart';
-import 'package:flutter_template/widgets/settings_tile.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:auto_route/auto_route.dart';
-import 'package:provider/provider.dart';
 
 @RoutePage()
 class SettingsPage extends StatefulWidget {
@@ -186,20 +182,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSegmentedControlOption(String text, bool isSelected) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Text(
-        text,
-        style: TextStyle(
-          color: isSelected ? Colors.white : Colors.white.withOpacity(0.6),
-          fontWeight: FontWeight.w600,
-          fontSize: 15,
         ),
       ),
     );

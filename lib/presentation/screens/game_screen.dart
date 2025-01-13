@@ -1,9 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/core/models/question.dart';
 import 'package:flutter_template/router/app_router.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 @RoutePage()
 class GameScreen extends StatefulWidget {
@@ -34,7 +32,6 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     final question = questions[currentQuestionIndex];
-    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -68,7 +65,7 @@ class _GameScreenState extends State<GameScreen> {
                 child: Row(
                   children: [
                     IconButton(
-                      onPressed: () => context.router.pop(),
+                      onPressed: () => context.router.maybePop(),
                       icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
                       style: IconButton.styleFrom(
                         backgroundColor: Colors.white.withOpacity(0.1),

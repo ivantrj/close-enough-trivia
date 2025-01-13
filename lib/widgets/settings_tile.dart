@@ -8,13 +8,13 @@ class ModernSettingsTile extends StatelessWidget {
   final bool showDivider;
 
   const ModernSettingsTile({
-    Key? key,
+    super.key,
     required this.title,
     required this.icon,
     this.onTap,
     this.trailing,
     this.showDivider = true,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

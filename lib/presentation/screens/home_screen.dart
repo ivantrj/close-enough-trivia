@@ -41,7 +41,7 @@ class HomeScreen extends StatelessWidget {
                     ).createShader(bounds);
                   },
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.transparent,
                     ),
                   ),
