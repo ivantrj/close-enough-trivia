@@ -176,15 +176,6 @@ class _GameScreenState extends State<GameScreen> {
                               size: 36,
                               color: Colors.deepPurple.shade200,
                             ),
-                            const SizedBox(height: 24),
-                            const Text(
-                              'Correct Answer:',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
                             const SizedBox(height: 16),
                             Text(
                               '${question.correctAnswer} ${question.unit}',
@@ -193,6 +184,7 @@ class _GameScreenState extends State<GameScreen> {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.deepPurple.shade200,
                               ),
+                              textAlign: TextAlign.center,
                             ),
                             if (question.explanation.isNotEmpty) ...[
                               const SizedBox(height: 24),
