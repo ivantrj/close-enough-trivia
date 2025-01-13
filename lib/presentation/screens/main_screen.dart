@@ -18,9 +18,9 @@ class MainScreen extends StatelessWidget {
         final tabsRouter = AutoTabsRouter.of(context);
         return Scaffold(
           body: child,
-          bottomNavigationBar: CustomBottomNavBar(
-            tabsRouter: tabsRouter,
-          ),
+          // bottomNavigationBar: CustomBottomNavBar(
+          //   tabsRouter: tabsRouter,
+          // ),
         );
       },
     );

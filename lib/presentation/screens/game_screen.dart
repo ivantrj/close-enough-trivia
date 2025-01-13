@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/core/models/question.dart';
+import 'package:flutter_template/router/app_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 @RoutePage()
@@ -55,7 +56,7 @@ class _GameScreenState extends State<GameScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () => context.router.pop(),
                       icon: const Icon(Icons.arrow_back_ios),
                       color: Colors.white,
                     ),
@@ -65,7 +66,13 @@ class _GameScreenState extends State<GameScreen> {
                             color: Colors.white,
                           ),
                     ),
-                    const SizedBox(width: 48), // Balance the back button
+                    IconButton(
+                      onPressed: () => context.pushRoute(const SettingsRoute()),
+                      icon: const Icon(
+                        FontAwesomeIcons.gear,
+                        color: Colors.white,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -92,10 +99,7 @@ class _GameScreenState extends State<GameScreen> {
                               const SizedBox(height: 24),
                               Text(
                                 question.text,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
                                 textAlign: TextAlign.center,
@@ -103,10 +107,7 @@ class _GameScreenState extends State<GameScreen> {
                               const SizedBox(height: 16),
                               Text(
                                 'Answer in ${question.unit}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium
-                                    ?.copyWith(
+                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
                                       color: Colors.grey,
                                     ),
                               ),
@@ -134,20 +135,14 @@ class _GameScreenState extends State<GameScreen> {
                                 const SizedBox(height: 16),
                                 Text(
                                   'Correct Answer:',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge
-                                      ?.copyWith(
+                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                         color: Colors.white,
                                       ),
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
                                   '${question.correctAnswer} ${question.unit}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headlineMedium
-                                      ?.copyWith(
+                                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -156,10 +151,7 @@ class _GameScreenState extends State<GameScreen> {
                                   const SizedBox(height: 16),
                                   Text(
                                     question.explanation,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.copyWith(
+                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                           color: Colors.white.withOpacity(0.9),
                                         ),
                                     textAlign: TextAlign.center,
