@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_template/stores/root_store.dart';
+import 'package:flutter_template/presentation/screens/game_screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 @RoutePage()
 class HomeScreen extends StatelessWidget {
@@ -10,48 +10,83 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final rootStore = RootStore();
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
-      appBar: AppBar(
-        title: Text(
-          'Home',
-          style: Theme.of(context).textTheme.headlineLarge,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              colorScheme.primary,
+              colorScheme.secondary,
+            ],
+          ),
         ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Observer(
-              builder: (_) => Text(
-                'Count: ${rootStore.counter.count}',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ),
-            Observer(
-              builder: (_) => Text(
-                'Is Even: ${rootStore.counter.isEven}',
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
+        child: SafeArea(
+          child: Center(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: rootStore.counter.decrement,
-                  child: const Icon(Icons.remove),
+                const Icon(
+                  FontAwesomeIcons.dice,
+                  size: 80,
+                  color: Colors.white,
                 ),
-                const SizedBox(width: 20),
-                ElevatedButton(
-                  onPressed: rootStore.counter.increment,
-                  child: const Icon(Icons.add),
+                const SizedBox(height: 24),
+                Text(
+                  'Close Enough',
+                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'The Trivia Drinking Game',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        color: Colors.white.withOpacity(0.8),
+                      ),
+                ),
+                const SizedBox(height: 48),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const GameScreen(),
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: colorScheme.primary,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  icon: const Icon(FontAwesomeIcons.play),
+                  label: const Text('Start Game'),
+                ),
+                const SizedBox(height: 16),
+                TextButton.icon(
+                  onPressed: () {
+                    // TODO: Implement rules screen
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                  ),
+                  icon: const Icon(FontAwesomeIcons.circleInfo),
+                  label: const Text('How to Play'),
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );
