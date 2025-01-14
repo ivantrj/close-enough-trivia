@@ -11,6 +11,15 @@ class Question {
     this.explanation = '',
   });
 
+  factory Question.fromJson(Map<String, dynamic> json) {
+    return Question(
+      text: json['text'] as String,
+      correctAnswer: (json['correctAnswer'] as num).toDouble(),
+      unit: json['unit'] as String,
+      explanation: json['explanation'] as String? ?? '',
+    );
+  }
+
   static List<Question> sampleQuestions = [
     Question(
       text: "How long is the Great Wall of China?",
