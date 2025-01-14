@@ -1,15 +1,18 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/core/models/player.dart';
 import 'package:flutter_template/core/models/question.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class GameScreen extends StatefulWidget {
   final List<Question> questions;
+  final List<Player>? players;
 
   const GameScreen({
     super.key,
     required this.questions,
+    this.players,
   });
 
   @override
@@ -17,32 +20,138 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  late int _currentQuestionIndex;
+  int _currentQuestionIndex = 0;
   bool _showAnswer = false;
+  Player? _roundWinner;
 
-  @override
-  void initState() {
-    super.initState();
-    _currentQuestionIndex = 0;
-  }
+  Question get question => widget.questions[_currentQuestionIndex];
 
   void _nextQuestion() {
-    if (_currentQuestionIndex < widget.questions.length - 1) {
-      setState(() {
+    setState(() {
+      _showAnswer = false;
+      _roundWinner = null;
+      if (_currentQuestionIndex < widget.questions.length - 1) {
         _currentQuestionIndex++;
-        _showAnswer = false;
-      });
-    } else {
-      context.popRoute();
+      } else {
+        _showGameOver();
+      }
+    });
+  }
+
+  void _showGameOver() {
+    if (widget.players == null || widget.players!.isEmpty) {
+      context.maybePop();
+      return;
     }
+
+    // Sort players by score
+    final sortedPlayers = [...widget.players!]..sort((a, b) => b.score.compareTo(a.score));
+    final winner = sortedPlayers.first;
+    final isMultipleWinners = sortedPlayers.where((p) => p.score == winner.score).length > 1;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.all(32),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Colors.deepPurple.shade900.withOpacity(0.95),
+                Colors.black.withOpacity(0.95),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(28),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.1),
+              width: 1,
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isMultipleWinners ? FontAwesomeIcons.trophy : FontAwesomeIcons.crown,
+                size: 48,
+                color: Colors.amber,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                isMultipleWinners ? 'It\'s a Tie!' : 'Winner!',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ...sortedPlayers.map((player) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          player.name,
+                          style: TextStyle(
+                            color: player.score == winner.score ? Colors.amber : Colors.white.withOpacity(0.9),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${player.score} points',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.7),
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.maybePop();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple.shade400,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                ),
+                child: const Text(
+                  'Finish Game',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _selectWinner(Player player) {
+    setState(() {
+      _roundWinner = player;
+      player.score++;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final question = widget.questions[_currentQuestionIndex];
-
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.transparent,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -57,10 +166,9 @@ class _GameScreenState extends State<GameScreen> {
         child: SafeArea(
           child: Stack(
             children: [
-              // Back button
               Positioned(
-                top: 24,
-                left: 24,
+                top: 16,
+                left: 16,
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.1),
@@ -71,15 +179,10 @@ class _GameScreenState extends State<GameScreen> {
                     icon: const Icon(
                       FontAwesomeIcons.arrowLeft,
                       color: Colors.white,
-                      size: 24,
-                    ),
-                    style: IconButton.styleFrom(
-                      padding: const EdgeInsets.all(12),
                     ),
                   ),
                 ),
               ),
-
               // Main content
               Padding(
                 padding: const EdgeInsets.all(32),
@@ -182,6 +285,60 @@ class _GameScreenState extends State<GameScreen> {
                                       height: 1.5,
                                     ),
                                     textAlign: TextAlign.center,
+                                  ),
+                                ],
+                                if (widget.players != null && _roundWinner == null) ...[
+                                  const SizedBox(height: 32),
+                                  const Text(
+                                    'Who was closest?',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Wrap(
+                                    spacing: 8,
+                                    runSpacing: 8,
+                                    alignment: WrapAlignment.center,
+                                    children: widget.players!
+                                        .map((player) => ActionChip(
+                                              label: Text(player.name),
+                                              onPressed: () => _selectWinner(player),
+                                              backgroundColor: Colors.deepPurple.shade400,
+                                              side: BorderSide(
+                                                color: Colors.deepPurple.shade200,
+                                                width: 1,
+                                              ),
+                                              labelStyle: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ))
+                                        .toList(),
+                                  ),
+                                ],
+                                if (_roundWinner != null) ...[
+                                  const SizedBox(height: 24),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        FontAwesomeIcons.trophy,
+                                        size: 20,
+                                        color: Colors.amber.shade400,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        '${_roundWinner!.name} wins this round!',
+                                        style: TextStyle(
+                                          color: Colors.amber.shade400,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ],

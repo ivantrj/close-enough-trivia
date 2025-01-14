@@ -8,7 +8,7 @@ class AIService {
 
   AIService() {
     _model = GenerativeModel(
-      model: 'gemini-pro',
+      model: 'gemini-1.5-flash',
       apiKey: apiKey,
     );
   }
@@ -17,7 +17,7 @@ class AIService {
     try {
       final prompt = '''
 Generate $count interesting trivia questions that ask for numerical answers. 
-Each question should be about fascinating facts that most people wouldn't know exactly but could make an educated guess.
+Each question should be about fascinating facts that most people wouldn't know exactly, but would be interesting to learn about. Start with 2-3 questions that people could make a guess about, and then just go with more and more obscure facts.
 
 Important formatting rules:
 1. All numerical values must be plain numbers without commas or special formatting

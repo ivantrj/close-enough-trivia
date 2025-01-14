@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/core/models/player.dart';
 import 'package:flutter_template/core/services/ai_service.dart';
 import 'package:flutter_template/presentation/widgets/loading_overlay.dart';
 import 'package:flutter_template/presentation/widgets/question_count_dialog.dart';
@@ -19,12 +20,15 @@ class _HomeScreenState extends State<HomeScreen> {
   final _aiService = AIService();
 
   Future<void> _startGame() async {
-    final questionCount = await showDialog<int>(
+    final result = await showDialog<Map<String, dynamic>>(
       context: context,
       builder: (context) => const QuestionCountDialog(),
     );
 
-    if (questionCount == null) return;
+    if (result == null) return;
+
+    final questionCount = result['count'] as int;
+    final players = result['players'] as List<Player>?;
 
     setState(() => _isLoading = true);
 
@@ -32,10 +36,13 @@ class _HomeScreenState extends State<HomeScreen> {
       final questions = await _aiService.generateQuestions(questionCount);
       if (!mounted) return;
 
-      context.pushRoute(GameRoute(questions: questions));
+      context.pushRoute(GameRoute(
+        questions: questions,
+        players: players,
+      ));
     } catch (e) {
       if (!mounted) return;
-      
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -211,8 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        if (_isLoading)
-          const LoadingOverlay(),
+        if (_isLoading) const LoadingOverlay(),
       ],
     );
   }

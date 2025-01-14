@@ -22,6 +22,7 @@ abstract class _$AppRouter extends RootStackRouter {
         child: GameScreen(
           key: args.key,
           questions: args.questions,
+          players: args.players,
         ),
       );
     },
@@ -58,12 +59,14 @@ class GameRoute extends PageRouteInfo<GameRouteArgs> {
   GameRoute({
     Key? key,
     required List<Question> questions,
+    List<Player>? players,
     List<PageRouteInfo>? children,
   }) : super(
           GameRoute.name,
           args: GameRouteArgs(
             key: key,
             questions: questions,
+            players: players,
           ),
           initialChildren: children,
         );
@@ -77,15 +80,18 @@ class GameRouteArgs {
   const GameRouteArgs({
     this.key,
     required this.questions,
+    this.players,
   });
 
   final Key? key;
 
   final List<Question> questions;
 
+  final List<Player>? players;
+
   @override
   String toString() {
-    return 'GameRouteArgs{key: $key, questions: $questions}';
+    return 'GameRouteArgs{key: $key, questions: $questions, players: $players}';
   }
 }
 
