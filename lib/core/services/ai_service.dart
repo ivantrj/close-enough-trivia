@@ -25,7 +25,6 @@ class AIService {
       final data = jsonDecode(response.body) as List;
       return data.map((json) => Question.fromJson(json)).toList();
     } catch (e) {
-      print('Error generating questions: $e');
       throw Exception('Failed to generate questions. Please try again.');
     }
   }
