@@ -38,9 +38,9 @@ flutter run
 
 ## Screenshots
 
-<img src="screenshots/home.png" width="300">
-<img src="screenshots/generate.png" width="300">
-<img src="screenshots/game.png" width="300">
+<img src="assets/screenshots/home.png" width="300">
+<img src="assets/screenshots/generate.png" width="300">
+<img src="assets/screenshots/game.png" width="300">
 
 ## License
 
