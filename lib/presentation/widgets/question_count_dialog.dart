@@ -149,8 +149,9 @@ class _QuestionCountDialogState extends State<QuestionCountDialog> {
                     ),
                     CupertinoSwitch(
                       value: _withPlayers,
-                      onChanged: (value) => setState(() => _withPlayers = value),
-                      activeColor: Colors.deepPurple.shade400,
+                      onChanged: (value) =>
+                          setState(() => _withPlayers = value),
+                      activeTrackColor: Colors.deepPurple.shade400,
                     ),
                   ],
                 ),
@@ -180,11 +181,13 @@ class _QuestionCountDialogState extends State<QuestionCountDialog> {
                           decoration: InputDecoration(
                             hintText: 'Enter player name',
                             hintStyle: TextStyle(
-                              color: Colors.deepPurple.shade200.withOpacity(0.3),
+                              color:
+                                  Colors.deepPurple.shade200.withOpacity(0.3),
                               fontSize: 16,
                             ),
                             border: InputBorder.none,
-                            contentPadding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(16, 12, 16, 12),
                             suffixIcon: IconButton(
                               onPressed: _addPlayer,
                               icon: Icon(

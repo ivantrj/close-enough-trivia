@@ -21,14 +21,25 @@ class GameScreen extends StatefulWidget {
 
 class _GameScreenState extends State<GameScreen> {
   int _currentQuestionIndex = 0;
-  bool _showAnswer = false;
+  String? _selectedAnswer;
   Player? _roundWinner;
 
   Question get question => widget.questions[_currentQuestionIndex];
 
+  void _handleAnswerSelection(String answer) {
+    setState(() {
+      _selectedAnswer = answer;
+      if (widget.players != null && widget.players!.isNotEmpty) {
+        if (answer == question.correctAnswer) {
+          widget.players![0].score += 1;
+        }
+      }
+    });
+  }
+
   void _nextQuestion() {
     setState(() {
-      _showAnswer = false;
+      _selectedAnswer = null;
       _roundWinner = null;
       if (_currentQuestionIndex < widget.questions.length - 1) {
         _currentQuestionIndex++;
@@ -148,6 +159,22 @@ class _GameScreenState extends State<GameScreen> {
     });
   }
 
+  Color _getAnswerColor(String answer) {
+    if (_selectedAnswer == null) {
+      return Colors.deepPurple.shade400;
+    }
+    
+    if (answer == question.correctAnswer) {
+      return Colors.green.shade400;
+    }
+    
+    if (answer == _selectedAnswer) {
+      return Colors.red.shade400;
+    }
+    
+    return Colors.deepPurple.shade400.withOpacity(0.5);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -238,19 +265,45 @@ class _GameScreenState extends State<GameScreen> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
-                                  'Answer in ${question.unit}',
+                                  question.category,
                                   style: TextStyle(
                                     fontSize: 18,
                                     color: Colors.white.withOpacity(0.8),
                                   ),
                                 ),
                               ),
+                              const SizedBox(height: 32),
+                              ...question.allAnswers.map((answer) => Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: _selectedAnswer == null
+                                        ? () => _handleAnswerSelection(answer)
+                                        : null,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: _getAnswerColor(answer),
+                                      padding: const EdgeInsets.all(16),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      answer,
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )).toList(),
                             ],
                           ),
                         ),
                       ),
                       const SizedBox(height: 32),
-                      if (_showAnswer) ...[
+                      if (_selectedAnswer != null) ...[
                         Card(
                           color: Colors.deepPurple.shade400.withOpacity(0.2),
                           shape: RoundedRectangleBorder(
@@ -261,28 +314,36 @@ class _GameScreenState extends State<GameScreen> {
                             child: Column(
                               children: [
                                 Icon(
-                                  FontAwesomeIcons.lightbulb,
+                                  _selectedAnswer == question.correctAnswer
+                                      ? FontAwesomeIcons.circleCheck
+                                      : FontAwesomeIcons.circleXmark,
                                   size: 32,
-                                  color: Colors.deepPurple.shade200,
+                                  color: _selectedAnswer == question.correctAnswer
+                                      ? Colors.green.shade300
+                                      : Colors.red.shade300,
                                 ),
                                 const SizedBox(height: 24),
                                 Text(
-                                  '${question.correctAnswer} ${question.unit}',
+                                  _selectedAnswer == question.correctAnswer
+                                      ? 'Correct!'
+                                      : 'Wrong! The correct answer is:',
                                   style: TextStyle(
-                                    fontSize: 32,
+                                    fontSize: 24,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.deepPurple.shade200,
+                                    color: _selectedAnswer == question.correctAnswer
+                                        ? Colors.green.shade300
+                                        : Colors.red.shade300,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
-                                if (question.explanation.isNotEmpty) ...[
-                                  const SizedBox(height: 24),
+                                if (_selectedAnswer != question.correctAnswer) ...[
+                                  const SizedBox(height: 16),
                                   Text(
-                                    question.explanation,
+                                    question.correctAnswer,
                                     style: TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white.withOpacity(0.8),
-                                      height: 1.5,
+                                      fontSize: 20,
+                                      color: Colors.white.withOpacity(0.9),
+                                      fontWeight: FontWeight.w500,
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
@@ -370,9 +431,9 @@ class _GameScreenState extends State<GameScreen> {
                             _currentQuestionIndex < widget.questions.length - 1 ? 'Next Question' : 'Finish Game',
                           ),
                         ),
-                      ] else
+                      ] else if (_selectedAnswer == null)
                         ElevatedButton.icon(
-                          onPressed: () => setState(() => _showAnswer = true),
+                          onPressed: null,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.deepPurple.shade400,
                             foregroundColor: Colors.white,

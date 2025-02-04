@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/core/models/player.dart';
-import 'package:flutter_template/core/services/ai_service.dart';
+import 'package:flutter_template/core/services/trivia_service.dart';
 import 'package:flutter_template/presentation/widgets/loading_overlay.dart';
 import 'package:flutter_template/presentation/widgets/question_count_dialog.dart';
 import 'package:flutter_template/router/app_router.dart';
@@ -17,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = false;
-  final _aiService = AIService();
+  final _triviaService = TriviaService();
 
   Future<void> _startGame() async {
     final result = await showDialog<Map<String, dynamic>>(
@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() => _isLoading = true);
 
     try {
-      final questions = await _aiService.generateQuestions(questionCount);
+      final questions = await _triviaService.getQuestions(questionCount);
       if (!mounted) return;
 
       context.pushRoute(GameRoute(
@@ -112,7 +112,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: IconButton(
-                        onPressed: () => context.pushRoute(const SettingsRoute()),
+                        onPressed: () =>
+                            context.pushRoute(const SettingsRoute()),
                         icon: const Icon(
                           FontAwesomeIcons.gear,
                           color: Colors.white,
@@ -147,7 +148,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 32),
                           Text(
                             'Close Enough',
-                            style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .displaySmall
+                                ?.copyWith(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: -0.5,
@@ -156,7 +160,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(height: 12),
                           Text(
                             'The Trivia Drinking Game',
-                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineSmall
+                                ?.copyWith(
                                   color: Colors.white.withOpacity(0.8),
                                   letterSpacing: 0.5,
                                 ),
@@ -190,7 +197,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           const SizedBox(height: 24),
                           TextButton.icon(
-                            onPressed: () => context.pushRoute(const HowToPlayRoute()),
+                            onPressed: () =>
+                                context.pushRoute(const HowToPlayRoute()),
                             style: TextButton.styleFrom(
                               foregroundColor: Colors.white.withOpacity(0.9),
                               padding: const EdgeInsets.symmetric(
