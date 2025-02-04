@@ -3,20 +3,20 @@ class Question {
   final String correctAnswer;
   final List<String> incorrectAnswers;
   final String category;
+  late final List<String> _shuffledAnswers;
 
   Question({
     required this.text,
     required this.correctAnswer,
     required this.incorrectAnswers,
     required this.category,
-  });
-
-  List<String> get allAnswers {
-    final answers = List<String>.from(incorrectAnswers);
-    answers.add(correctAnswer);
-    answers.shuffle();
-    return answers;
+  }) {
+    _shuffledAnswers = List<String>.from(incorrectAnswers);
+    _shuffledAnswers.add(correctAnswer);
+    _shuffledAnswers.shuffle();
   }
+
+  List<String> get allAnswers => _shuffledAnswers;
 
   factory Question.fromJson(Map<String, dynamic> json) {
     return Question(

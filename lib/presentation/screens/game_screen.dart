@@ -55,7 +55,6 @@ class _GameScreenState extends State<GameScreen> {
       return;
     }
 
-    // Sort players by score
     final sortedPlayers = [...widget.players!]..sort((a, b) => b.score.compareTo(a.score));
     final winner = sortedPlayers.first;
     final isMultipleWinners = sortedPlayers.where((p) => p.score == winner.score).length > 1;
@@ -210,7 +209,6 @@ class _GameScreenState extends State<GameScreen> {
                   ),
                 ),
               ),
-              // Main content
               Padding(
                 padding: const EdgeInsets.all(32),
                 child: SingleChildScrollView(
@@ -290,170 +288,98 @@ class _GameScreenState extends State<GameScreen> {
                                     ),
                                     child: Text(
                                       answer,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         fontSize: 16,
-                                        color: Colors.white,
+                                        color: _selectedAnswer != null && answer != _selectedAnswer && answer != question.correctAnswer
+                                            ? Colors.white.withOpacity(0.5)
+                                            : Colors.white,
                                       ),
                                     ),
                                   ),
                                 ),
                               )).toList(),
+                              if (_selectedAnswer != null && widget.players != null && _roundWinner == null) ...[                                
+                                const SizedBox(height: 32),
+                                const Text(
+                                  'Who was closest?',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  alignment: WrapAlignment.center,
+                                  children: widget.players!
+                                      .map((player) => ActionChip(
+                                            label: Text(player.name),
+                                            onPressed: () => _selectWinner(player),
+                                            backgroundColor: Colors.deepPurple.shade400,
+                                            side: BorderSide(
+                                              color: Colors.deepPurple.shade200,
+                                              width: 1,
+                                            ),
+                                            labelStyle: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ))
+                                      .toList(),
+                                ),
+                              ],
+                              if (_roundWinner != null)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      FontAwesomeIcons.trophy,
+                                      size: 20,
+                                      color: Colors.amber.shade400,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      '${_roundWinner!.name} wins this round!',
+                                      style: TextStyle(
+                                        color: Colors.amber.shade400,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              const SizedBox(height: 32),
+                              if (_selectedAnswer != null)
+                                ElevatedButton.icon(
+                                  onPressed: _nextQuestion,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.deepPurple.shade400,
+                                    foregroundColor: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 32,
+                                      vertical: 16,
+                                    ),
+                                    textStyle: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    elevation: 8,
+                                    shadowColor: Colors.deepPurple.withOpacity(0.5),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                  ),
+                                  icon: const Icon(FontAwesomeIcons.forward),
+                                  label: Text(
+                                    _currentQuestionIndex < widget.questions.length - 1 ? 'Next Question' : 'Finish Game',
+                                  ),
+                                ),
                             ],
                           ),
                         ),
                       ),
-                      const SizedBox(height: 32),
-                      if (_selectedAnswer != null) ...[
-                        Card(
-                          color: Colors.deepPurple.shade400.withOpacity(0.2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(32),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  _selectedAnswer == question.correctAnswer
-                                      ? FontAwesomeIcons.circleCheck
-                                      : FontAwesomeIcons.circleXmark,
-                                  size: 32,
-                                  color: _selectedAnswer == question.correctAnswer
-                                      ? Colors.green.shade300
-                                      : Colors.red.shade300,
-                                ),
-                                const SizedBox(height: 24),
-                                Text(
-                                  _selectedAnswer == question.correctAnswer
-                                      ? 'Correct!'
-                                      : 'Wrong! The correct answer is:',
-                                  style: TextStyle(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                    color: _selectedAnswer == question.correctAnswer
-                                        ? Colors.green.shade300
-                                        : Colors.red.shade300,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                if (_selectedAnswer != question.correctAnswer) ...[
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    question.correctAnswer,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.white.withOpacity(0.9),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                                if (widget.players != null && _roundWinner == null) ...[
-                                  const SizedBox(height: 32),
-                                  const Text(
-                                    'Who was closest?',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Wrap(
-                                    spacing: 8,
-                                    runSpacing: 8,
-                                    alignment: WrapAlignment.center,
-                                    children: widget.players!
-                                        .map((player) => ActionChip(
-                                              label: Text(player.name),
-                                              onPressed: () => _selectWinner(player),
-                                              backgroundColor: Colors.deepPurple.shade400,
-                                              side: BorderSide(
-                                                color: Colors.deepPurple.shade200,
-                                                width: 1,
-                                              ),
-                                              labelStyle: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ))
-                                        .toList(),
-                                  ),
-                                ],
-                                if (_roundWinner != null) ...[
-                                  const SizedBox(height: 24),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        FontAwesomeIcons.trophy,
-                                        size: 20,
-                                        color: Colors.amber.shade400,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        '${_roundWinner!.name} wins this round!',
-                                        style: TextStyle(
-                                          color: Colors.amber.shade400,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 32),
-                        ElevatedButton.icon(
-                          onPressed: _nextQuestion,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple.shade400,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32,
-                              vertical: 16,
-                            ),
-                            textStyle: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            elevation: 8,
-                            shadowColor: Colors.deepPurple.withOpacity(0.5),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                          icon: const Icon(FontAwesomeIcons.forward),
-                          label: Text(
-                            _currentQuestionIndex < widget.questions.length - 1 ? 'Next Question' : 'Finish Game',
-                          ),
-                        ),
-                      ] else if (_selectedAnswer == null)
-                        ElevatedButton.icon(
-                          onPressed: null,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple.shade400,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 32,
-                              vertical: 16,
-                            ),
-                            textStyle: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            elevation: 8,
-                            shadowColor: Colors.deepPurple.withOpacity(0.5),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                          icon: const Icon(FontAwesomeIcons.eye),
-                          label: const Text('Reveal Answer'),
-                        ),
                     ],
                   ),
                 ),
