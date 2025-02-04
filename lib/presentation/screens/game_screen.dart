@@ -167,11 +167,14 @@ class _GameScreenState extends State<GameScreen> {
       return Colors.green.shade400;
     }
     
-    if (answer == _selectedAnswer) {
-      return Colors.red.shade400;
+    if (_selectedAnswer != null) {
+      if (answer == _selectedAnswer && answer != question.correctAnswer) {
+        return Colors.red.shade400;
+      }
+      return Colors.deepPurple.shade400.withOpacity(0.5);
     }
     
-    return Colors.deepPurple.shade400.withOpacity(0.5);
+    return Colors.deepPurple.shade400;
   }
 
   @override
@@ -252,24 +255,7 @@ class _GameScreenState extends State<GameScreen> {
                                     ),
                                 textAlign: TextAlign.center,
                               ),
-                              const SizedBox(height: 16),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 12,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  question.category,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: Colors.white.withOpacity(0.8),
-                                  ),
-                                ),
-                              ),
+
                               const SizedBox(height: 32),
                               ...question.allAnswers.map((answer) => Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
@@ -286,14 +272,32 @@ class _GameScreenState extends State<GameScreen> {
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                     ),
-                                    child: Text(
-                                      answer,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: _selectedAnswer != null && answer != _selectedAnswer && answer != question.correctAnswer
-                                            ? Colors.white.withOpacity(0.5)
-                                            : Colors.white,
-                                      ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            answer,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: _selectedAnswer != null && answer != _selectedAnswer && answer != question.correctAnswer
+                                                  ? Colors.white.withOpacity(0.5)
+                                                  : Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        if (_selectedAnswer != null)
+                                          Icon(
+                                            answer == question.correctAnswer
+                                                ? FontAwesomeIcons.check
+                                                : answer == _selectedAnswer
+                                                    ? FontAwesomeIcons.xmark
+                                                    : null,
+                                            color: answer == question.correctAnswer
+                                                ? Colors.green.shade400
+                                                : Colors.red.shade400,
+                                            size: 20,
+                                          ),
+                                      ],
                                     ),
                                   ),
                                 ),

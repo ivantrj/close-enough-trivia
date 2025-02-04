@@ -65,42 +65,32 @@ class HowToPlayScreen extends StatelessWidget {
                     _buildInstructionCard(
                       context,
                       icon: FontAwesomeIcons.users,
-                      title: '1. Gather Your Friends',
-                      description: 'Get a group of friends together and make sure everyone has something to drink!',
+                      title: '1. Gather Your Players',
+                      description: 'Get your friends together for an exciting trivia game!',
                     ),
                     _buildInstructionCard(
                       context,
                       icon: FontAwesomeIcons.question,
-                      title: '2. Read the Question',
-                      description:
-                          'One person reads the question aloud from the phone. Each question asks for a numerical answer.',
+                      title: '2. Answer Questions',
+                      description: 'Read each question carefully and select what you think is the correct answer from the multiple choices.',
                     ),
                     _buildInstructionCard(
                       context,
-                      icon: FontAwesomeIcons.pencil,
-                      title: '3. Write Down Answers',
-                      description:
-                          'Everyone writes down their guess. Make sure to use the units specified in the question!',
+                      icon: FontAwesomeIcons.check,
+                      title: '3. Check Your Answer',
+                      description: 'After selecting your answer, the correct one will be revealed in green. If you chose wrong, your answer will be shown in red.',
                     ),
                     _buildInstructionCard(
                       context,
-                      icon: FontAwesomeIcons.eye,
-                      title: '4. Reveal the Answer',
-                      description:
-                          'Once everyone has written their answer, tap "Reveal Answer" to see the correct answer.',
-                    ),
-                    _buildInstructionCard(
-                      context,
-                      icon: FontAwesomeIcons.beerMugEmpty,
-                      title: '5. Time to Drink!',
-                      description: 'The person whose guess was furthest from the correct answer has to drink!',
+                      icon: FontAwesomeIcons.trophy,
+                      title: '4. Score Points',
+                      description: 'Get points for each correct answer. The player with the most points at the end wins!',
                     ),
                     _buildInstructionCard(
                       context,
                       icon: FontAwesomeIcons.forward,
-                      title: '6. Keep Playing',
-                      description:
-                          'Tap "Next Question" to continue. Keep playing until you\'ve had enough... or had too much! 😉',
+                      title: '5. Keep Playing',
+                      description: 'Move on to the next question and try to maintain your winning streak!',
                     ),
                     const SizedBox(height: 24),
                   ],
